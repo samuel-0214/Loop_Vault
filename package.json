@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "TAILWIND_CONFIG=app/tailwind.config.ts next dev",
-    "build": "TAILWIND_CONFIG=app/tailwind.config.ts next build",
-    "dev-dashboard": "TAILWIND_CONFIG=app/dashboard/tailwind.config.ts next dev",
-    "build-dashboard": "TAILWIND_CONFIG=app/dashboard/tailwind.config.ts next build"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.2",
