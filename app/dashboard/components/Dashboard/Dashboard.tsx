@@ -46,9 +46,17 @@ const mockFunds = [
   },
 ];
 
+interface ChitFund {
+  id: number;
+  name: string;
+  description: string;
+  maxParticipants: number;
+  currentParticipants: number;
+}
+
 export default function Dashboard() {
   const router = useRouter();
-  const [chitFunds, setChitFunds] = useState<any[]>([]);
+  const [chitFunds, setChitFunds] = useState<ChitFund[]>([]);
 
   useEffect(() => {
     // Fetch chit funds from local storage

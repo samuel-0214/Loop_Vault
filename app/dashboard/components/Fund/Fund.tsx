@@ -12,18 +12,29 @@ import {
 } from "../../components/ui/card";
 import Modal from "../../components/ui/Modal";
 
+interface Fund {
+  id: number;
+  name: string;
+  contributionAmount: number;
+  cycleDuration: number;
+  totalCycles: number;
+  collateralRequirement: number;
+  maxParticipants: number;
+  currentParticipants: number;
+}
+
 export default function FundDetails() {
   const router = useRouter();
   const { id } = useParams();
-  const [fund, setFund] = useState<any>(null);
+  const [fund, setFund] = useState<Fund | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [isJoined, setIsJoined] = useState(false);
 
   useEffect(() => {
     // Fetch chit funds from local storage
-    const savedFunds = JSON.parse(localStorage.getItem("chitFunds") || "[]");
-    const selectedFund = savedFunds.find((f: any) => f.id === Number(id));
-    setFund(selectedFund);
+    const savedFunds: Fund[] = JSON.parse(localStorage.getItem("chitFunds") || "[]");
+    const selectedFund = savedFunds.find((f) => f.id === Number(id));
+    setFund(selectedFund || null);
   }, [id]);
 
   if (!fund) {
@@ -43,14 +54,14 @@ export default function FundDetails() {
     }
 
     // Update the fund's current participants count
-    const updatedFund = {
+    const updatedFund: Fund = {
       ...fund,
       currentParticipants: fund.currentParticipants + 1,
     };
 
     // Update local storage
-    const savedFunds = JSON.parse(localStorage.getItem("chitFunds") || "[]");
-    const updatedFunds = savedFunds.map((f: any) =>
+    const savedFunds: Fund[] = JSON.parse(localStorage.getItem("chitFunds") || "[]");
+    const updatedFunds = savedFunds.map((f) =>
       f.id === updatedFund.id ? updatedFund : f
     );
     localStorage.setItem("chitFunds", JSON.stringify(updatedFunds));

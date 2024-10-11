@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-import { motion, useTransform, useScroll, useSpring } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useScroll } from "framer-motion";
 
 export const TracingBeam = ({
   children,
@@ -12,16 +12,6 @@ export const TracingBeam = ({
     target: ref,
     offset: ["start start", "end end"],
   });
-
-  const springConfig = { stiffness: 100, damping: 30, bounce: 0 };
-  const x = useSpring(
-    useTransform(scrollYProgress, [0, 0.5, 1], [0, 500, 1000]),
-    springConfig
-  );
-  const y = useSpring(
-    useTransform(scrollYProgress, [0, 0.5, 1], [0, 500, 1000]),
-    springConfig
-  );
 
   return (
     <div

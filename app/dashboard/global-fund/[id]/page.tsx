@@ -11,8 +11,20 @@ import {
   CardTitle,
 } from "../../components/ui/card";
 
+interface Fund {
+  id: string;
+  name: string;
+  contributionAmount: number;
+  cycleDuration: number;
+  totalCycles: number;
+  collateralRequirement: number;
+  maxParticipants: number;
+  currentParticipants: number;
+  disbursementSchedule: string[];
+}
+
 // Dummy data
-const globalFundDetails = [
+const globalFundDetails: Fund[] = [
   {
     id: "1",
     name: "DeFi Yield Fund",
@@ -51,12 +63,12 @@ const globalFundDetails = [
 export default function GlobalFundDetails() {
   const router = useRouter();
   const { id } = useParams();
-  const [fund, setFund] = useState<any>(null);
+  const [fund, setFund] = useState<Fund | null>(null);
 
   useEffect(() => {
     // Find the global fund by id
     const selectedFund = globalFundDetails.find((f) => f.id === id);
-    setFund(selectedFund);
+    setFund(selectedFund || null);
   }, [id]);
 
   if (!fund) {

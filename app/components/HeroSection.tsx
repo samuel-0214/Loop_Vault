@@ -10,7 +10,6 @@ import { FlipWords } from "./ui/flip-words";
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.8, ease: [0.6, -0.05, 0.01, 0.99] },
 };
 
 const words = ["Chit Funds", "ROSCA"];
@@ -33,14 +32,14 @@ function HeroSection() {
         <div className="p-4 relative z-10 w-full text-center">
           <motion.h1
             variants={fadeInUp}
-            transition={{ delay: staggerDelay * 1 }}
+            transition={{ duration: 0.8, ease: [0.6, -0.05, 0.01, 0.99], delay: staggerDelay * 1 }}
             className="mt-20 md:mt-0 text-4xl md:text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 p-10"
           >
             <Highlight className="text-black dark:text-white"> LoopVault </Highlight>
           </motion.h1>
           <motion.h3
             variants={fadeInUp}
-            transition={{ delay: staggerDelay * 2 }}
+            transition={{ duration: 0.8, ease: [0.6, -0.05, 0.01, 0.99], delay: staggerDelay * 2 }}
             className="mt-20 md:mt-0 text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 static p-3"
           >
             Decentralized Finance meets Traditional{" "}
@@ -50,7 +49,7 @@ function HeroSection() {
           </motion.h3>
           <motion.div
             variants={fadeInUp}
-            transition={{ delay: staggerDelay * 4 }}
+            transition={{ duration: 0.8, ease: [0.6, -0.05, 0.01, 0.99], delay: staggerDelay * 4 }}
             className="mt-8"
           >
             <Link href={"/dashboard"}>

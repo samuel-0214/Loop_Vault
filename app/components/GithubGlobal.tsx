@@ -3,9 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { ErrorBoundary } from "react-error-boundary";
-import styles from "../styles/GlobeDemo.module.css";
-
-const staggerDelay = 0.2;
 
 // Dynamically import the World component
 const World = dynamic(() => import("./ui/globe").then((m) => m.World), {
@@ -13,8 +10,10 @@ const World = dynamic(() => import("./ui/globe").then((m) => m.World), {
   loading: () => <div className="loading-globe"></div>,
 });
 
+const staggerDelay = 0.2;
+
 // Error Fallback Component
-function ErrorFallback({ error }) {
+function ErrorFallback({ error }: { error: Error }) {
   return (
     <div
       role="alert"
@@ -28,7 +27,7 @@ function ErrorFallback({ error }) {
 // Main Component
 export function GlobeDemo() {
   const [isVisible, setIsVisible] = useState(false);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Intersection observer for lazy loading the globe when in view
   useEffect(() => {
@@ -72,6 +71,7 @@ export function GlobeDemo() {
     autoRotate: true,
     autoRotateSpeed: 0.4,
   };
+
 
   const colors = ["#06b6d4", "#3b82f6", "#6366f1"];
   const sampleArcs = [
@@ -443,7 +443,10 @@ export function GlobeDemo() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[40rem] w-full bg-white dark:bg-black relative " ref={containerRef}>
+    <div
+      className="flex flex-col items-center justify-center min-h-[40rem] w-full bg-white dark:bg-black relative"
+      ref={containerRef}
+    >
       <div className="max-w-7xl mx-auto w-full relative overflow-hidden px-4">
         <motion.div
           initial="hidden"
@@ -456,7 +459,7 @@ export function GlobeDemo() {
               },
             },
           }}
-          className="flex flex-col md:flex-row items-center justify-between h-[30rem] md:h-[40rem] py:0 "
+          className="flex flex-col md:flex-row items-center justify-between h-[30rem] md:h-[40rem] py-0"
         >
           <motion.div
             className="flex-1 text-center md:text-left mb-8 md:mb-0 md:pr-8"
@@ -474,11 +477,12 @@ export function GlobeDemo() {
             variants={fadeInUpVariants}
           >
             <ErrorBoundary FallbackComponent={ErrorFallback}>
-              <World
-                data={sampleArcs}
-                globeConfig={globeConfig}
-                className="w-full h-full"
-              />
+              <div className="w-full h-full">
+                <World
+                  data={sampleArcs}
+                  globeConfig={globeConfig}
+                />
+              </div>
             </ErrorBoundary>
           </motion.div>
         </motion.div>

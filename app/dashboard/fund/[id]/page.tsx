@@ -13,19 +13,29 @@ import {
 import { Progress } from "../../components/ui/progress";
 import Modal from "../../components/ui/Modal";
 
+interface Fund {
+  id: number;
+  name: string;
+  description: string;
+  maxParticipants: number;
+  currentParticipants: number;
+  collateralRequirement: number;
+  disbursementSchedule: string[];
+}
+
 export default function FundDetails() {
   const router = useRouter();
   const { id } = useParams();
-  const [fund, setFund] = useState<any>(null);
+  const [fund, setFund] = useState<Fund | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isJoined, setIsJoined] = useState(false);
 
   useEffect(() => {
     // Fetch chit funds from local storage
-    const savedFunds = JSON.parse(localStorage.getItem("chitFunds") || "[]");
-    const selectedFund = savedFunds.find((f: any) => f.id === Number(id));
-    setFund(selectedFund);
+    const savedFunds: Fund[] = JSON.parse(localStorage.getItem("chitFunds") || "[]");
+    const selectedFund = savedFunds.find((f) => f.id === Number(id));
+    setFund(selectedFund || null);
   }, [id]);
 
   const handleJoinFund = () => {
@@ -33,50 +43,51 @@ export default function FundDetails() {
   };
 
   const handleDeleteFund = () => {
-    // Only allow deletion if no participants have joined
-    if (fund.currentParticipants > 0) {
+    if (fund && fund.currentParticipants > 0) {
       alert("You cannot delete a fund that has already started.");
       setShowDeleteModal(false);
       return;
     }
 
-    // Confirm the deletion
-    const savedFunds = JSON.parse(localStorage.getItem("chitFunds") || "[]");
-    const updatedFunds = savedFunds.filter((f: any) => f.id !== fund.id);
-    localStorage.setItem("chitFunds", JSON.stringify(updatedFunds));
+    if (fund) {
+      const savedFunds: Fund[] = JSON.parse(localStorage.getItem("chitFunds") || "[]");
+      const updatedFunds = savedFunds.filter((f) => f.id !== fund.id);
+      localStorage.setItem("chitFunds", JSON.stringify(updatedFunds));
 
-    alert("The fund has been successfully deleted.");
-    setShowDeleteModal(false);
-    router.push("/dashboard");
+      alert("The fund has been successfully deleted.");
+      setShowDeleteModal(false);
+      router.push("/dashboard");
+    }
   };
 
   const handlePay = () => {
-    // Check if the fund is already full
-    if (fund.currentParticipants >= fund.maxParticipants) {
+    if (fund && fund.currentParticipants >= fund.maxParticipants) {
       alert("This fund is already full.");
       setShowModal(false);
       return;
     }
 
-    // Update the fund's current participants count
-    const updatedFund = {
-      ...fund,
-      currentParticipants: fund.currentParticipants + 1,
-    };
+    if (fund) {
+      // Update the fund's current participants count
+      const updatedFund: Fund = {
+        ...fund,
+        currentParticipants: fund.currentParticipants + 1,
+      };
 
-    // Update local storage
-    const savedFunds = JSON.parse(localStorage.getItem("chitFunds") || "[]");
-    const updatedFunds = savedFunds.map((f: any) =>
-      f.id === updatedFund.id ? updatedFund : f
-    );
-    localStorage.setItem("chitFunds", JSON.stringify(updatedFunds));
+      // Update local storage
+      const savedFunds: Fund[] = JSON.parse(localStorage.getItem("chitFunds") || "[]");
+      const updatedFunds = savedFunds.map((f) =>
+        f.id === updatedFund.id ? updatedFund : f
+      );
+      localStorage.setItem("chitFunds", JSON.stringify(updatedFunds));
 
-    // Update the state
-    setFund(updatedFund);
-    setShowModal(false);
-    setIsJoined(true);
+      // Update the state
+      setFund(updatedFund);
+      setShowModal(false);
+      setIsJoined(true);
 
-    alert(`You have successfully joined the fund and paid $${fund.collateralRequirement} as collateral!`);
+      alert(`You have successfully joined the fund and paid $${fund.collateralRequirement} as collateral!`);
+    }
   };
 
   if (!fund) {
@@ -114,7 +125,7 @@ export default function FundDetails() {
           <div className="mt-4">
             <strong>Disbursement Schedule:</strong>
             <div className="grid grid-cols-3 gap-2 mt-2">
-              {fund.disbursementSchedule.map((amount: string, index: number) => (
+              {fund.disbursementSchedule.map((amount, index) => (
                 <div
                   key={index}
                   className="bg-gray-200 dark:bg-gray-800 p-2 rounded text-center"

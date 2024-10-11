@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useMotionValueEvent,
-  useScroll,
-  useTransform,
-  motion,
-} from "framer-motion";
+import { useScroll, useTransform, motion } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 
 interface TimelineEntry {
@@ -17,6 +12,8 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const ref = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
+  const [isBrightList, setIsBrightList] = useState<boolean[]>(Array(data.length).fill(false));
+  const itemRefs = useRef<(HTMLDivElement | null)[]>(data.map(() => null));
 
   useEffect(() => {
     if (ref.current) {
@@ -33,6 +30,35 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
   const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
+  useEffect(() => {
+    const observers = itemRefs.current.map((itemRef, index) => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          setIsBrightList((prev) => {
+            const newIsBrightList = [...prev];
+            newIsBrightList[index] = entry.isIntersecting;
+            return newIsBrightList;
+          });
+        },
+        { threshold: 0.5 }
+      );
+
+      if (itemRef) {
+        observer.observe(itemRef);
+      }
+
+      return observer;
+    });
+
+    return () => {
+      observers.forEach((observer, index) => {
+        if (itemRefs.current[index]) {
+          observer.unobserve(itemRefs.current[index]!);
+        }
+      });
+    };
+  }, [data.length]);
+
   return (
     <div
       className="w-full bg-gradient-to-b from-black via-[#100a14] to-black font-sans md:px-10 flex flex-col items-center"
@@ -48,82 +74,60 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
       </div>
 
       <div ref={ref} className="relative max-w-7xl mx-auto pb-20">
-        {data.map((item, index) => {
-          const itemRef = useRef<HTMLDivElement>(null);
-          const [isBright, setIsBright] = useState(false);
-
-          useEffect(() => {
-            const observer = new IntersectionObserver(
-              ([entry]) => {
-                setIsBright(entry.isIntersecting);
-              },
-              { threshold: 0.5 }
-            );
-
-            if (itemRef.current) {
-              observer.observe(itemRef.current);
-            }
-
-            return () => {
-              if (itemRef.current) {
-                observer.unobserve(itemRef.current);
-              }
-            };
-          }, []);
-
-          return (
+        {data.map((item, index) => (
+          <div
+            key={index}
+            className={`flex justify-center pt-10 md:pt-40 md:gap-10`}
+          >
             <div
-              key={index}
-              className={`flex justify-center pt-10 md:pt-40 md:gap-10`}
+              className={`sticky flex flex-col md:flex-row z-40 items-center top-40 self-start max-w-xs lg:max-w-sm md:w-full`}
             >
-              <div
-                className={`sticky flex flex-col md:flex-row z-40 items-center top-40 self-start max-w-xs lg:max-w-sm md:w-full`}
-              >
-                <div className="h-10 absolute left-3 md:left-3 w-10 rounded-full bg-white dark:bg-black flex items-center justify-center">
-                  <div
-                    className={`h-4 w-4 rounded-full ${
-                      isBright ? "bg-[#924ad8]" : "bg-gray-500"
-                    } border border-neutral-300 dark:border-neutral-700 p-2`}
-                  />
-                </div>
-                <motion.h3
-                  className={`hidden md:block text-xl md:pl-20 md:text-5xl font-bold transition-all duration-300 ${
-                    isBright ? "text-white" : "text-neutral-500 dark:text-neutral-500"
-                  }`}
-                  animate={{ opacity: isBright ? 1 : 0.5 }}
-                  transition={{ duration: 1, ease: [0.42, 0, 0.58, 1] }}
-                >
-                  {item.title}
-                </motion.h3>
-              </div>
-
-              <motion.div
-                ref={itemRef}
-                initial={{ opacity: 0.5 }}
-                animate={{ opacity: isBright ? 1 : 0.5 }}
-                transition={{ duration: 1, ease: [0.42, 0, 0.58, 1] }}
-                className="relative pl-20 pr-4 md:pl-4 w-full"
-              >
-                <h3
-                  className={`md:hidden block text-2xl mb-4 text-left font-bold transition-all duration-300 ${
-                    isBright
-                      ? "text-white"
-                      : "text-neutral-500 dark:text-neutral-500"
-                  }`}
-                >
-                  {item.title}
-                </h3>
+              <div className="h-10 absolute left-3 md:left-3 w-10 rounded-full bg-white dark:bg-black flex items-center justify-center">
                 <div
-                  className={`${
-                    isBright ? "text-white" : "text-neutral-500"
-                  } text-lg transition-all duration-300`}
-                >
-                  {item.content}
-                </div>
-              </motion.div>
+                  className={`h-4 w-4 rounded-full ${
+                    isBrightList[index] ? "bg-[#924ad8]" : "bg-gray-500"
+                  } border border-neutral-300 dark:border-neutral-700 p-2`}
+                />
+              </div>
+              <motion.h3
+                className={`hidden md:block text-xl md:pl-20 md:text-5xl font-bold transition-all duration-300 ${
+                  isBrightList[index] ? "text-white" : "text-neutral-500 dark:text-neutral-500"
+                }`}
+                animate={{ opacity: isBrightList[index] ? 1 : 0.5 }}
+                transition={{ duration: 1, ease: [0.42, 0, 0.58, 1] }}
+              >
+                {item.title}
+              </motion.h3>
             </div>
-          );
-        })}
+
+            <motion.div
+              ref={(el) => {
+                itemRefs.current[index] = el;
+              }}              
+              initial={{ opacity: 0.5 }}
+              animate={{ opacity: isBrightList[index] ? 1 : 0.5 }}
+              transition={{ duration: 1, ease: [0.42, 0, 0.58, 1] }}
+              className="relative pl-20 pr-4 md:pl-4 w-full"
+            >
+              <h3
+                className={`md:hidden block text-2xl mb-4 text-left font-bold transition-all duration-300 ${
+                  isBrightList[index]
+                    ? "text-white"
+                    : "text-neutral-500 dark:text-neutral-500"
+                }`}
+              >
+                {item.title}
+              </h3>
+              <div
+                className={`${
+                  isBrightList[index] ? "text-white" : "text-neutral-500"
+                } text-lg transition-all duration-300`}
+              >
+                {item.content}
+              </div>
+            </motion.div>
+          </div>
+        ))}
         <div
           style={{
             height: height + "px",

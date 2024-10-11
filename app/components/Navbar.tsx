@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { HoveredLink, Menu, MenuItem, ProductItem } from "./ui/navbar-menu";
+import { HoveredLink, Menu, MenuItem } from "./ui/navbar-menu";
 import { cn } from "../libs/utils";
 import Link from "next/link";
 
@@ -25,7 +25,7 @@ function Navbar({ className }: { className?: string }) {
                   <HoveredLink href="#features">Features</HoveredLink>
                   <HoveredLink href="#roadmap">Roadmap</HoveredLink>
                   <HoveredLink href="#faqsection">FAQ</HoveredLink>
-                  <HoveredLink href="#our_team">Our Team</HoveredLink>
+                  <HoveredLink href="/ourteam">Our Team</HoveredLink>
                 </div>
               </MenuItem>
             </Link>
