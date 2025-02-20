@@ -15,36 +15,36 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 // Static mock global funds
-const mockFunds = [
-  {
-    id: 1,
-    name: "DeFi Yield Fund",
-    description: "High-yield farming across multiple DeFi protocols",
-    maxParticipants: 100,
-    currentParticipants: 75,
-  },
-  {
-    id: 2,
-    name: "NFT Collector's Fund",
-    description: "Curated collection of rare and valuable NFTs",
-    maxParticipants: 50,
-    currentParticipants: 32,
-  },
-  {
-    id: 3,
-    name: "Crypto Blue Chips",
-    description: "Portfolio of top 10 cryptocurrencies by market cap",
-    maxParticipants: 200,
-    currentParticipants: 180,
-  },
-  {
-    id: 4,
-    name: "Web3 Startup Fund",
-    description: "Investing in promising Web3 startups and protocols",
-    maxParticipants: 150,
-    currentParticipants: 60,
-  },
-];
+// const mockFunds = [
+//   {
+//     id: 1,
+//     name: "DeFi Yield Fund",
+//     description: "High-yield farming across multiple DeFi protocols",
+//     maxParticipants: 100,
+//     currentParticipants: 75,
+//   },
+//   {
+//     id: 2,
+//     name: "NFT Collector's Fund",
+//     description: "Curated collection of rare and valuable NFTs",
+//     maxParticipants: 50,
+//     currentParticipants: 32,
+//   },
+//   {
+//     id: 3,
+//     name: "Crypto Blue Chips",
+//     description: "Portfolio of top 10 cryptocurrencies by market cap",
+//     maxParticipants: 200,
+//     currentParticipants: 180,
+//   },
+//   {
+//     id: 4,
+//     name: "Web3 Startup Fund",
+//     description: "Investing in promising Web3 startups and protocols",
+//     maxParticipants: 150,
+//     currentParticipants: 60,
+//   },
+// ];
 
 interface ChitFund {
   id: number;
@@ -66,7 +66,7 @@ export default function Dashboard() {
 
   return (
     <div className="container mx-auto p-4">
-      {/* Global Funds Section */}
+      {/* Global Funds Section
       <div className="mb-10">
         <h1 className="text-3xl font-bold mb-6">Global Funds</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -105,7 +105,7 @@ export default function Dashboard() {
             </motion.div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Your Funds Section */}
       <div>
